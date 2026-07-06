@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Posting Skill Analyzer</title>
+</head>
+
+<body>
+
+    <h1>Job Posting Skill Analyzer</h1>
+        <form action="/add" method="POST">
+
+            <p>Company</p>
+            <input type="text" name="company">
+
+            <p>Job Title</p>
+            <input type="text" name="job_title">
+
+            <p>Salary</p>
+            <input type="text" name="salary">
+
+            <p>Description</p>
+            <textarea name="description"></textarea>
+
+            <br><br>
+
+            <button type="submit">Add Job</button>
+
+        </form>
+
+<hr>
+    <p>Saved job postings:</p>
+
+    <ul>
+        {% for job in jobs %}
+            <li>
+                {{ job["company"] }} - {{ job["job_title"] }} - {{ job["salary"] }}
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
