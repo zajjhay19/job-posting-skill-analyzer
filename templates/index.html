@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Job Posting Skill Analyzer</title>
+    <script src = "https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -27,7 +28,19 @@
 
         </form>
 
-<hr>
+
+    <h2>Top Skills</h2>
+
+    <canvas id = "skillsChart"></canvas>
+
+        <ul>
+            {% for skill in skill_counts %}
+                <li>
+                    {{ skill["skill"] }} - {{ skill["count"] }}
+                </li>
+            {% endfor %}
+        </ul>
+
     <p>Saved job postings:</p>
 
     <ul>
@@ -38,5 +51,24 @@
         {% endfor %}
     </ul>
 
+
+    <script>
+      const skillLabels = {{ skill_labels | tojson }};
+
+      const skillData = {{ skill_data | tojson }};
+
+        const ctx = document.getElementById("skillsChart");
+
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: skillLabels,
+                datasets:[{
+                    label: "Skill Count",
+                    data: skillData
+                }] 
+            }
+        });
+    </script>
 </body>
 </html>

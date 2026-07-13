@@ -113,9 +113,32 @@ def get_jobs():
     return jobs
 
 
+def get_skill_counts():
 
+    connection = sqlite3.connect("jobs.db")
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+
+    cursor.execute("""
+
+    SELECT skill, COUNT(*) AS count
+    FROM skills
+    GROUP BY skill
+    ORDER BY count DESC
+    """)
+
+    skill_counts = cursor.fetchall()
+
+    connection.close()
+
+    return skill_counts
 
 
 if __name__ == "__main__":
 
     create_database()
+
+    skill_counts = get_skill_counts()
+
+    for skill in skill_counts:
+        print(skill["skill"], skill["count"])
