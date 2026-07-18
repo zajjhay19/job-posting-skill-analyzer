@@ -1,4 +1,5 @@
-SKILLS = [ 
+SKILLS = [ #Creates the master list of skills the application knows how to recognize.
+
     "Python",
     "SQL",
     "Flask",
@@ -19,31 +20,33 @@ SKILLS = [
     "Linux",
     "Excel",
     "Power BI"
-    ]
+]
 
 
-def extract_skills(description):
+def extract_skills(description): #Creates a machine that takes text and returns any recognized skills.
 
-    found_skills = []
+    found_skills = [] #Creates an empty box to store all detected skills.
 
-    description = description.lower() ## changes whatever we write to lowercase
+    description = description.lower() #Converts the text to lowercase for consistent matching.
 
-    for skill in SKILLS:
-        print(skill)
+    for skill in SKILLS: #Loops through every skill the application knows about.
 
-        if skill.lower() in description:
-                       
-            found_skills.append(skill)
-                                      
-    return found_skills
-    
+        print(skill) #Displays the current skill being checked for debugging and learning purposes.
 
-    #testing
+        if skill.lower() in description: #Checks if the current skill appears anywhere in the text.
 
-if __name__ == "__main__":
-            
-    description = "Looking for python, Flask, SQL and Docker."
+            found_skills.append(skill) #Adds the detected skill to the results list.
 
-    skills = extract_skills(description)
+    return found_skills #Returns the completed list of detected skills.
 
-    print(skills)
+
+
+# Testing
+
+if __name__ == "__main__": #Checks if this file is being run directly instead of being imported.
+
+    description = "Looking for python, Flask, SQL and Docker." #Creates sample text to test the extractor.
+
+    skills = extract_skills(description) #Runs the extractor on the sample text.
+
+    print(skills) #Displays the skills that were successfully detected.
