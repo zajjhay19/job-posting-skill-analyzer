@@ -77,15 +77,28 @@ def add(): #Processes new job submissions.
     return redirect("/") #Sends the user back to the home page after processing is complete.
 
 
-@app.route( "/upload_resume", methods=["POST"]) #Connects resume form submissions to the function below.
+@app.route("/upload_resume", methods=["POST"]) #Connects resume form submissions to the function below.
 def upload_resume():#Processes the resume uploaded by the user.
 
     resume_file = request.files["resume"]#Gets the resume file that the user uploaded through the HTML form.
 
-
     resume_text = extract_resume_text(resume_file) #Converts the uploaded PDF or DOCX resume into plain text.
 
     resume_skills = extract_skills(resume_text)#Finds all recognized skills inside the extracted resume text.
+
+    skill_counts = get_skill_counts()#Gets all skills found in the saved job postings and how many times each one appears.
+
+    market_skills = set() #Creates an empty box to store unique skills found on the job market.
+
+    for skill in skill_counts: #Loops through every skill returned by the database.
+
+        market_skills.add(skill["skill"])# Adds only the skill name into the market skills set.
+    
+    resume_skills = set(resume_skills) #Converts the resume skills list into a set so it can be compared with another set.
+
+    missing_skills = market_skills - resume_skills#Finds the skills that employers want that are missing from the resume.
+
+    print(missing_skills) #Displays the missing skills in the terminal so we can test the comparison.
 
     print(resume_skills)#Displays the detected resume skills in the terminal so we can test that everything works.
 
