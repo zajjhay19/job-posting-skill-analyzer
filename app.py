@@ -102,7 +102,7 @@ def upload_resume():#Processes the resume uploaded by the user.
 
     print(resume_skills)#Displays the detected resume skills in the terminal so we can test that everything works.
 
-    return redirect("/")
+    return redirect("/")#comment
 
 
 if __name__=="__main__": #Checks if this file is being run directly.
