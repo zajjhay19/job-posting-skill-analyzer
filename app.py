@@ -47,7 +47,7 @@ def home(): #Builds everything needed for the main page.
 
         skill_labels=skill_labels, #Makes the chart labels available to JavaScript.
 
-        skill_data=skill_data, #Makes the chart values available to JavaScript.
+        skill_data=skill_data,  #Makes the chart values available to JavaScript.
 
         missing_skills=missing_skills #Makes the missing resume skills available inside the HTML template.
     )
