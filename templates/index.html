@@ -43,6 +43,16 @@
 
     </form>
 
+    <h2>Missing Skills</h2>
+
+    <ul>
+        {% for skill in missing_skills %}
+
+        <li>{{ skill }}</li>
+
+        {% endfor %}
+    </ul>
+    
     <h2>Top Skills</h2>
 
     <canvas id = "skillsChart"></canvas>

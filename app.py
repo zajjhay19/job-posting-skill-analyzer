@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect #Imports the tools Flask needs to build webpages, receive form data, and move users between pages.
+import os #Imports tools that let Python read information stored in the computer's environment.
+from flask import Flask, render_template, request, redirect, session #Imports the tools Flask needs to build webpages, receive form data, and move users between pages.   including session for remembering temporary user data between requests.
 from resume_parser import extract_resume_text #Imports the machine that converts an uploaded resume file into readable text.
 
 from database import (
@@ -11,7 +12,7 @@ from database import (
 from skill_extractor import extract_skills #Imports the machine that finds skills inside text.
 
 app = Flask(__name__) #Creates the Flask application that runs the website.
-
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key") #Gets the session secret key from the computer and uses a temporary development key if one has not been set.
 
 @app.route("/") #Connects the home page URL to the function below.
 def home(): #Builds everything needed for the main page.
@@ -19,6 +20,8 @@ def home(): #Builds everything needed for the main page.
     jobs = get_jobs() #Gets all saved jobs from the database.
 
     skill_counts = get_skill_counts() #Gets the number of times each skill appears.
+
+    missing_skills = session.get("missing_skills", [])  #Gets the missing skills from the session or creates an empty list if no resume has been analyzed yet.
 
     skill_labels = [ #Creates a list that stores only the skill names for Chart.js.
 
@@ -44,7 +47,9 @@ def home(): #Builds everything needed for the main page.
 
         skill_labels=skill_labels, #Makes the chart labels available to JavaScript.
 
-        skill_data=skill_data #Makes the chart values available to JavaScript.
+        skill_data=skill_data, #Makes the chart values available to JavaScript.
+
+        missing_skills=missing_skills #Makes the missing resume skills available inside the HTML template.
     )
 
 
@@ -97,6 +102,8 @@ def upload_resume():#Processes the resume uploaded by the user.
     resume_skills = set(resume_skills) #Converts the resume skills list into a set so it can be compared with another set.
 
     missing_skills = market_skills - resume_skills#Finds the skills that employers want that are missing from the resume.
+
+    session["missing_skills"] = list(missing_skills) #Stores the missing skills in the session so Flask can remember them after the redirect.
 
     print(missing_skills) #Displays the missing skills in the terminal so we can test the comparison.
 
