@@ -23,6 +23,8 @@ def home(): #Builds everything needed for the main page.
 
     missing_skills = session.get("missing_skills", [])  #Gets the missing skills from the session or creates an empty list if no resume has been analyzed yet.
 
+    match_percentage = session.get("match_percentage", 0)  #Gets the resume match percentage from the session or sets it to 0 if no resume has been analyzed yet.
+
     skill_labels = [ #Creates a list that stores only the skill names for Chart.js.
 
         skill["skill"] #Takes the skill name from each database row.
@@ -49,7 +51,9 @@ def home(): #Builds everything needed for the main page.
 
         skill_data=skill_data,  #Makes the chart values available to JavaScript.
 
-        missing_skills=missing_skills #Makes the missing resume skills available inside the HTML template.
+        missing_skills=missing_skills, #Makes the missing resume skills available inside the HTML template.
+
+        match_percentage=match_percentage #Makes the resume match percentage available inside the HTML template.
     )
 
 
@@ -83,37 +87,45 @@ def add(): #Processes new job submissions.
 
 
 @app.route("/upload_resume", methods=["POST"]) #Connects resume form submissions to the function below.
-def upload_resume():#Processes the resume uploaded by the user.
+def upload_resume(): #Processes the resume uploaded by the user.
 
-    resume_file = request.files["resume"]#Gets the resume file that the user uploaded through the HTML form.
+    resume_file = request.files["resume"] #Gets the resume file that the user uploaded through the HTML form.
 
     resume_text = extract_resume_text(resume_file) #Converts the uploaded PDF or DOCX resume into plain text.
 
-    resume_skills = extract_skills(resume_text)#Finds all recognized skills inside the extracted resume text.
+    resume_skills = extract_skills(resume_text) #Finds all recognized skills inside the extracted resume text.
 
-    skill_counts = get_skill_counts()#Gets all skills found in the saved job postings and how many times each one appears.
+    skill_counts = get_skill_counts() #Gets all skills found in the saved job postings and how many times each one appears.
 
-    market_skills = set() #Creates an empty box to store unique skills found on the job market.
+    market_skills = set() #Creates an empty box to store unique skills found in the job market.
 
     for skill in skill_counts: #Loops through every skill returned by the database.
 
-        market_skills.add(skill["skill"])# Adds only the skill name into the market skills set.
-    
+        market_skills.add(skill["skill"]) #Adds only the skill name into the market skills set.
+
     resume_skills = set(resume_skills) #Converts the resume skills list into a set so it can be compared with another set.
 
-    missing_skills = market_skills - resume_skills#Finds the skills that employers want that are missing from the resume.
+    missing_skills = market_skills - resume_skills #Finds the skills that employers want that are missing from the resume.
+
+    matched_skills = market_skills & resume_skills #Finds the skills that appear in both the job market and the resume.
+
+    if len(market_skills) > 0: #Checks if there are any skills in the job market.
+
+        match_percentage = (len(matched_skills) / len(market_skills)) * 100 #Calculates the percentage of market skills that are already on the resume.
+
+    else:
+
+        match_percentage = 0
 
     session["missing_skills"] = list(missing_skills) #Stores the missing skills in the session so Flask can remember them after the redirect.
 
+    session["match_percentage"] = match_percentage #Stores the resume match percentage in the session so Flask can remember it after the redirect.
+
     print(missing_skills) #Displays the missing skills in the terminal so we can test the comparison.
 
-    print(resume_skills)#Displays the detected resume skills in the terminal so we can test that everything works.
+    print(resume_skills) #Displays the detected resume skills in the terminal so we can test that everything works.
 
-    return redirect("/")#comment
+    print(match_percentage) #Displays the resume match percentage in the terminal so we can test the calculation.
 
-
-if __name__=="__main__": #Checks if this file is being run directly.
-
-    app.run(debug=True) #Starts the Flask development server.
-
+    return redirect("/") #Sends the user back to the home page after the resume analysis is complete.
 
