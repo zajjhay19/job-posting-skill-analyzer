@@ -111,7 +111,7 @@ def upload_resume(): #Processes the resume uploaded by the user.
 
     if len(market_skills) > 0: #Checks if there are any skills in the job market.
 
-        match_percentage = (len(matched_skills) / len(market_skills)) * 100 #Calculates the percentage of market skills that are already on the resume.
+        match_percentage = round((len(matched_skills) / len(market_skills)) * 100) #Calculates the percentage of market skills that are already on the resume.
 
     else:
 
@@ -129,3 +129,6 @@ def upload_resume(): #Processes the resume uploaded by the user.
 
     return redirect("/") #Sends the user back to the home page after the resume analysis is complete.
 
+if __name__ == "__main__": #Checks if this file is being run directly.
+
+    app.run(debug=True) #Starts the Flask development server.
