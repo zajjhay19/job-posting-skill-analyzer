@@ -19,7 +19,8 @@ SKILLS = [ #Creates the master list of skills the application knows how to recog
     "Azure",
     "Linux",
     "Excel",
-    "Power BI"
+    "Power BI",
+    "TensorFlow"
 ]
 
 

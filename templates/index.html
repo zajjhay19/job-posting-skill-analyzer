@@ -11,16 +11,16 @@
         <form action="/add" method="POST">
 
             <p>Company</p>
-            <input type="text" name="company">
+            <input type="text" name="company" required>
 
             <p>Job Title</p>
-            <input type="text" name="job_title">
+            <input type="text" name="job_title" required>
 
             <p>Salary</p>
-            <input type="text" name="salary">
+            <input type="text" name="salary" >
 
             <p>Description</p>
-            <textarea name="description"></textarea>
+            <textarea name="description" required></textarea>
 
             <br><br>
 
@@ -33,7 +33,7 @@
             method="POST"
             enctype="multipart/form-data">
 
-            <input type="file" name="resume">
+            <input type="file" name="resume"  required>
 
             <br><br>
 
@@ -51,7 +51,9 @@
     <ul>
         {% for skill in matched_skills %}
 
-            <li>{{ skill }}</li>
+            <li>
+                {{ skill }}
+            </li>
 
         {% endfor %}
     </ul>
@@ -59,9 +61,11 @@
     <h2>Missing Skills</h2>
 
     <ul>
-        {% for skill in missing_skills %}
+        {% for skill in prioritized_missing_skills %}
 
-        <li>{{ skill }}</li>
+            <li>
+                {{ skill["skill"] }} - {{ skill["count"] }} job postings
+            </li>
 
         {% endfor %}
     </ul>
