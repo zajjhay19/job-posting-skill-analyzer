@@ -25,6 +25,8 @@ def home(): #Builds everything needed for the main page.
 
     match_percentage = session.get("match_percentage", 0)  #Gets the resume match percentage from the session or sets it to 0 if no resume has been analyzed yet.
 
+    matched_skills = session.get("matched_skills", []) #Gets the matched skills from the session or creates an empty list if no resume has been analyzed yet.
+
     skill_labels = [ #Creates a list that stores only the skill names for Chart.js.
 
         skill["skill"] #Takes the skill name from each database row.
@@ -53,7 +55,9 @@ def home(): #Builds everything needed for the main page.
 
         missing_skills=missing_skills, #Makes the missing resume skills available inside the HTML template.
 
-        match_percentage=match_percentage #Makes the resume match percentage available inside the HTML template.
+        match_percentage=match_percentage, #Makes the resume match percentage available inside the HTML template.
+
+        matched_skills=matched_skills #Makes the matched resume skills available inside the HTML template.
     )
 
 
@@ -120,6 +124,8 @@ def upload_resume(): #Processes the resume uploaded by the user.
     session["missing_skills"] = list(missing_skills) #Stores the missing skills in the session so Flask can remember them after the redirect.
 
     session["match_percentage"] = match_percentage #Stores the resume match percentage in the session so Flask can remember it after the redirect.
+
+    session["matched_skills"] = list(matched_skills) #Stores the matched skills in the session so Flask can remember them after the redirect.
 
     print(missing_skills) #Displays the missing skills in the terminal so we can test the comparison.
 
