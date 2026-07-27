@@ -113,6 +113,7 @@ The application currently detects technologies including:
 - Linux
 - Excel
 - Power BI
+- TensorFlow
 
 Skill detection is case-insensitive.
 
