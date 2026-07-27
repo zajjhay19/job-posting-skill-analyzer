@@ -97,7 +97,6 @@ def add(): #Processes new job submissions.
 
     return redirect("/") #Sends the user back to the home page after processing is complete.
 
-
 @app.route("/upload_resume", methods=["POST"]) #Connects resume form submissions to the function below.
 def upload_resume(): #Processes the resume uploaded by the user.
 
@@ -105,14 +104,18 @@ def upload_resume(): #Processes the resume uploaded by the user.
 
         return redirect("/")#Sends the user back to the home page if no resume file was submitted.
 
+    resume_file = request.files["resume"] #Gets the resume file that the user uploaded through the HTML form.
+
     if resume_file.filename == "":#Checks if the user submitted the form without selecting a resume file.
 
         return redirect("/")#Sends the user back to the home page if no resume file was selected.
     
     allowed_extensions =(".pdf",".docx")#Creates a group containing the resume file types that the application accepts.
 
-    resume_file = request.files["resume"] #Gets the resume file that the user uploaded through the HTML form.
+    if not resume_file.filename.lower().endswith(allowed_extensions):
 
+        return redirect("/")
+    
     resume_text = extract_resume_text(resume_file) #Converts the uploaded PDF or DOCX resume into plain text.
 
     resume_skills = extract_skills(resume_text) #Finds all recognized skills inside the extracted resume text.
@@ -141,7 +144,7 @@ def upload_resume(): #Processes the resume uploaded by the user.
                         }
                 ) #Adds the missing skill and its market count as a normal dictionary that Flask can store in the session.
 
-                matched_skills = market_skills & resume_skills #Finds the skills that appear in both the job market and the resume.
+    matched_skills = market_skills & resume_skills #Finds the skills that appear in both the job market and the resume.
 
     if len(market_skills) > 0: #Checks if there are any skills in the job market.
 
