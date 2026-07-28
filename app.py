@@ -1,5 +1,7 @@
 import os #Imports tools that let Python read information stored in the computer's environment.
-from flask import Flask, render_template, request, redirect, session #Imports the tools Flask needs to build webpages, receive form data, and move users between pages.   including session for remembering temporary user data between requests.
+
+from flask import Flask, render_template, request, redirect, session, flash #Imports the Flask tools used for webpages, forms, redirects, sessions, and temporary feedback messages.
+
 from resume_parser import extract_resume_text #Imports the machine that converts an uploaded resume file into readable text.
 
 from database import (
@@ -9,64 +11,84 @@ from database import (
     get_skill_counts #Imports the machine that counts how many times each skill appears.
 )
 
-from skill_extractor import extract_skills #Imports the machine that finds skills inside text.
+from skill_extractor import extract_skills #Imports the machine that finds recognized skills inside text.
+
 
 app = Flask(__name__) #Creates the Flask application that runs the website.
-app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key") #Gets the session secret key from the computer and uses a temporary development key if one has not been set.
+
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "dev-secret-key"
+) #Gets the session secret key from the computer or uses a temporary development key if one has not been set.
+
+
 
 @app.route("/") #Connects the home page URL to the function below.
 def home(): #Builds everything needed for the main page.
 
     jobs = get_jobs() #Gets all saved jobs from the database.
 
-    skill_counts = get_skill_counts() #Gets the number of times each skill appears.
+    skill_counts = get_skill_counts() #Gets each skill and the number of times it appears in saved job postings.
 
-    missing_skills = session.get("missing_skills", [])  #Gets the missing skills from the session or creates an empty list if no resume has been analyzed yet.
+    missing_skills = session.get(
+        "missing_skills",
+        []
+    ) #Gets the missing skills from the session or uses an empty list if no resume has been analyzed yet.
 
-    match_percentage = session.get("match_percentage", 0)  #Gets the resume match percentage from the session or sets it to 0 if no resume has been analyzed yet.
+    match_percentage = session.get(
+        "match_percentage",
+        0
+    ) #Gets the resume match percentage from the session or uses 0 if no resume has been analyzed yet.
 
-    matched_skills = session.get("matched_skills", []) #Gets the matched skills from the session or creates an empty list if no resume has been analyzed yet.
+    matched_skills = session.get(
+        "matched_skills",
+        []
+    ) #Gets the matched resume skills from the session or uses an empty list if no resume has been analyzed yet.
 
-    prioritized_missing_skills = session.get("prioritized_missing_skills", []) #Gets the prioritized missing skills from the session or creates an empty list if no resume has been analyzed yet.
+    prioritized_missing_skills = session.get(
+        "prioritized_missing_skills",
+        []
+    ) #Gets the missing skills and their market demand counts from the session.
 
-    skill_labels = [ #Creates a list that stores only the skill names for Chart.js.
+    skill_labels = [ #Creates a list containing only the skill names for Chart.js.
 
-        skill["skill"] #Takes the skill name from each database row.
+        skill["skill"] #Takes the skill name from the current database row.
 
-        for skill in skill_counts #Repeats for every skill count row returned from the database.
+        for skill in skill_counts #Repeats for every skill returned from the database.
     ]
 
-    skill_data = [ #Creates a list that stores only the skill counts for Chart.js.
+    skill_data = [ #Creates a list containing only the skill counts for Chart.js.
 
-        skill["count"] #Takes the number associated with each skill.
+        skill["count"] #Takes the count from the current database row.
 
-        for skill in skill_counts #Repeats for every skill count row returned from the database.
+        for skill in skill_counts #Repeats for every skill returned from the database.
     ]
 
-    return render_template( #Sends data to the HTML page so Jinja can build the webpage.
+    return render_template( #Sends all the information needed to build the home page.
 
-        "index.html", #Tells Flask which HTML file to build.
+        "index.html", #Tells Flask which HTML template to use.
 
-        jobs=jobs, #Makes the jobs list available inside the HTML template.
+        jobs=jobs, #Makes the saved jobs available inside the HTML template.
 
-        skill_counts=skill_counts, #Makes the raw skill statistics available inside the HTML template.
+        skill_counts=skill_counts, #Makes the skill statistics available inside the HTML template.
 
         skill_labels=skill_labels, #Makes the chart labels available to JavaScript.
 
-        skill_data=skill_data,  #Makes the chart values available to JavaScript.
+        skill_data=skill_data, #Makes the chart values available to JavaScript.
 
         missing_skills=missing_skills, #Makes the missing resume skills available inside the HTML template.
 
         match_percentage=match_percentage, #Makes the resume match percentage available inside the HTML template.
 
         matched_skills=matched_skills, #Makes the matched resume skills available inside the HTML template.
-        
-        prioritized_missing_skills=prioritized_missing_skills #Makes the prioritized missing skills and their market counts available inside the HTML template.
-        )
+
+        prioritized_missing_skills=prioritized_missing_skills #Makes the prioritized missing skills and their demand counts available inside the HTML template.
+    )
 
 
-@app.route("/add", methods=["POST"]) #Connects form submissions to the function below.
-def add(): #Processes new job submissions.
+
+@app.route("/add", methods=["POST"]) #Connects job form submissions to the function below.
+def add(): #Processes a new job posting submitted by the user.
 
     company = request.form["company"] #Gets the company entered by the user.
 
@@ -76,11 +98,11 @@ def add(): #Processes new job submissions.
 
     description = request.form["description"] #Gets the job description entered by the user.
 
-    if not company or not job_title  or not description:#Checks if any required job information is missing.
-        return redirect("/") #Sends the user back to the home page instead of saving an incomplete job.
+    if not company or not job_title or not description: #Checks if any required job information is missing.
 
-    
-    job_id = add_job( #Saves the job and receives the database ID that was assigned to it.
+        return redirect("/")
+
+    job_id = add_job( #Saves the job and stores the database ID assigned to the new job.
 
         company,
         job_title,
@@ -91,85 +113,111 @@ def add(): #Processes new job submissions.
 
     skills = extract_skills(description) #Finds all recognized skills inside the job description.
 
-    for skill in skills: #Repeats once for every skill that was found.
+    for skill in skills: #Loops through every skill that was found.
 
-        add_skill(job_id, skill) #Connects each skill to the job that it came from.
+        add_skill(
+            job_id,
+            skill
+        ) #Connects each detected skill to the job it came from.
 
-    return redirect("/") #Sends the user back to the home page after processing is complete.
+    return redirect("/") #Sends the user back to the home page after the job is saved.
 
 @app.route("/upload_resume", methods=["POST"]) #Connects resume form submissions to the function below.
 def upload_resume(): #Processes the resume uploaded by the user.
 
-    if "resume" not in request.files:#Checks if the resume file was included in the form submission.
-
-        return redirect("/")#Sends the user back to the home page if no resume file was submitted.
-
-    resume_file = request.files["resume"] #Gets the resume file that the user uploaded through the HTML form.
-
-    if resume_file.filename == "":#Checks if the user submitted the form without selecting a resume file.
-
-        return redirect("/")#Sends the user back to the home page if no resume file was selected.
-    
-    allowed_extensions =(".pdf",".docx")#Creates a group containing the resume file types that the application accepts.
-
-    if not resume_file.filename.lower().endswith(allowed_extensions):
+    if "resume" not in request.files: #Checks if the resume field was included in the form submission.
 
         return redirect("/")
-    
-    resume_text = extract_resume_text(resume_file) #Converts the uploaded PDF or DOCX resume into plain text.
 
-    resume_skills = extract_skills(resume_text) #Finds all recognized skills inside the extracted resume text.
+    resume_file = request.files["resume"] #Gets the uploaded resume and stores it so the application can inspect and process it.
 
-    skill_counts = get_skill_counts() #Gets all skills found in the saved job postings and how many times each one appears.
+    if resume_file.filename == "": #Checks if the user submitted the form without selecting a file.
 
-    market_skills = set() #Creates an empty box to store unique skills found in the job market.
+        return redirect("/")
 
-    for skill in skill_counts: #Loops through every skill returned by the database.
+    allowed_extensions = (
+        ".pdf",
+        ".docx"
+    ) #Creates a group containing the resume file types that the application accepts.
 
-        market_skills.add(skill["skill"]) #Adds only the skill name into the market skills set.
+    if not resume_file.filename.lower().endswith(allowed_extensions): #Checks if the uploaded resume is not a PDF or DOCX file.
 
-    resume_skills = set(resume_skills) #Converts the resume skills list into a set so it can be compared with another set.
+        flash(
+            "Only PDF and DOCX resumes are supported."
+        ) #Stores a temporary message explaining why the uploaded file was rejected.
 
-    missing_skills = market_skills - resume_skills #Finds the skills that employers want that are missing from the resume.
+        return redirect("/")
 
-    prioritized_missing_skills = []#Creates an empty list to store missing skills together with how often employers request them.
+    resume_text = extract_resume_text(
+        resume_file
+    ) #Converts the uploaded PDF or DOCX resume into plain text.
 
-    for skill in skill_counts:#Loops through every skill and its count returned from the database.
+    resume_skills = extract_skills(
+        resume_text
+    ) #Finds all recognized skills inside the extracted resume text.
 
-        if skill["skill"] in missing_skills:#Checks if the current skill from the database is one of the skills missing from the resume.
-                prioritized_missing_skills.append(
-                        {
-                            "skill": skill["skill"],
-                            "count": skill["count"]
-                        }
-                ) #Adds the missing skill and its market count as a normal dictionary that Flask can store in the session.
+    skill_counts = get_skill_counts() #Gets each market skill and how many times it appears in saved job postings.
 
-    matched_skills = market_skills & resume_skills #Finds the skills that appear in both the job market and the resume.
+    market_skills = set() #Creates an empty set to store the unique skills found in the job market.
 
-    if len(market_skills) > 0: #Checks if there are any skills in the job market.
+    for skill in skill_counts: #Loops through every skill returned from the database.
 
-        match_percentage = round((len(matched_skills) / len(market_skills)) * 100) #Calculates the percentage of market skills that are already on the resume.
+        market_skills.add(
+            skill["skill"]
+        ) #Adds only the skill name to the market skills set.
+
+    resume_skills = set(
+        resume_skills
+    ) #Converts the resume skills list into a set so it can be compared with the market skills set.
+
+    missing_skills = market_skills - resume_skills #Finds market skills that were not found on the resume.
+
+    matched_skills = market_skills & resume_skills #Finds skills that appear in both the market and the resume.
+
+    prioritized_missing_skills = [] #Creates an empty list to store missing skills together with their market demand counts.
+
+    for skill in skill_counts: #Loops through every market skill and its count.
+
+        if skill["skill"] in missing_skills: #Checks if the current market skill is missing from the resume.
+
+            prioritized_missing_skills.append(
+                {
+                    "skill": skill["skill"],
+                    "count": skill["count"]
+                }
+            ) #Stores the missing skill and its market count as a normal dictionary.
+
+    if len(market_skills) > 0: #Checks if there are any market skills before attempting the percentage calculation.
+
+        match_percentage = round(
+            (
+                len(matched_skills)
+                /
+                len(market_skills)
+            )
+            * 100
+        ) #Calculates what percentage of market skills are already found on the resume.
 
     else:
 
         match_percentage = 0
 
-    session["missing_skills"] = list(missing_skills) #Stores the missing skills in the session so Flask can remember them after the redirect.
+    session["missing_skills"] = list(
+        missing_skills
+    ) #Stores the missing skills in the session so Flask remembers them after the redirect.
 
-    session["match_percentage"] = match_percentage #Stores the resume match percentage in the session so Flask can remember it after the redirect.
+    session["match_percentage"] = match_percentage #Stores the resume match percentage in the session.
 
-    session["matched_skills"] = list(matched_skills) #Stores the matched skills in the session so Flask can remember them after the redirect.
+    session["matched_skills"] = list(
+        matched_skills
+    ) #Stores the matched resume skills in the session.
 
-    session["prioritized_missing_skills"] = prioritized_missing_skills #Stores the prioritized missing skills in the session so Flask can remember them after the redirect.
+    session["prioritized_missing_skills"] = prioritized_missing_skills #Stores the prioritized missing skills and demand counts in the session.
 
-    print(missing_skills) #Displays the missing skills in the terminal so we can test the comparison.
+    print(missing_skills) #Displays the missing skills in the terminal while we are still testing the application.
 
-    print(resume_skills) #Displays the detected resume skills in the terminal so we can test that everything works.
+    print(resume_skills) #Displays the detected resume skills in the terminal while we are still testing the application.
 
-    print(match_percentage) #Displays the resume match percentage in the terminal so we can test the calculation.
+    print(match_percentage) #Displays the calculated match percentage in the terminal while we are still testing the application.
 
     return redirect("/") #Sends the user back to the home page after the resume analysis is complete.
-
-if __name__ == "__main__": #Checks if this file is being run directly.
-
-    app.run(debug=True) #Starts the Flask development server.
