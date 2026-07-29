@@ -1,5 +1,3 @@
-## comments
-
 import sqlite3 #Imports the tool that allows Python to communicate with SQLite databases.
 
 
