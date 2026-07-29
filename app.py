@@ -106,6 +106,10 @@ def add(): #Processes a new job posting submitted by the user.
     description = request.form["description"] #Gets the job description entered by the user.
 
     if not company or not job_title or not description: #Checks if any required job information is missing.
+            
+        flash(
+           "Please enter the company, job title, and description."
+       ) #Stores a temporary message explaining which job information is required.
 
         return redirect("/")
 
@@ -119,6 +123,13 @@ def add(): #Processes a new job posting submitted by the user.
     )
 
     skills = extract_skills(description) #Finds all recognized skills inside the job description.
+
+    if not skills: #Checks if the job description contained any skills the application recognizes.
+
+        flash(
+            "Job saved, but no recognized skills were found in the description."
+        ) #Tells the user that the job was saved even though no skills were detected.
+
 
     for skill in skills: #Loops through every skill that was found.
 
@@ -136,12 +147,20 @@ def upload_resume(): #Processes the resume uploaded by the user.
 
     if "resume" not in request.files: #Checks if the resume field was included in the form submission.
 
+        flash(
+             "No resume was submitted."
+        ) #Stores a temporary message explaining that the resume was missing from the submission.
+            
         return redirect("/")
 
     resume_file = request.files["resume"] #Gets the uploaded resume and stores it so the application can inspect and process it.
 
     if resume_file.filename == "": #Checks if the user submitted the form without selecting a file.
 
+        flash(
+            "Please select a resume before uploading."
+        ) #Stores a temporary message explaining that a resume must be selected.
+            
         return redirect("/")
 
     allowed_extensions = (
