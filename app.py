@@ -13,6 +13,13 @@ from database import (
 
 from skill_extractor import extract_skills #Imports the machine that finds recognized skills inside text.
 
+from analysis import (
+    find_matched_skills, #Imports the machine that finds skills shared by the job market and resume.
+    find_missing_skills, #Imports the machine that finds market skills missing from the resume.
+    calculate_match_percentage, #Imports the machine that calculates the resume match percentage.
+    prioritize_missing_skills #Imports the machine that prioritizes missing skills using market demand.
+)
+
 
 app = Flask(__name__) #Creates the Flask application that runs the website.
 
@@ -122,6 +129,8 @@ def add(): #Processes a new job posting submitted by the user.
 
     return redirect("/") #Sends the user back to the home page after the job is saved.
 
+
+
 @app.route("/upload_resume", methods=["POST"]) #Connects resume form submissions to the function below.
 def upload_resume(): #Processes the resume uploaded by the user.
 
@@ -170,37 +179,25 @@ def upload_resume(): #Processes the resume uploaded by the user.
         resume_skills
     ) #Converts the resume skills list into a set so it can be compared with the market skills set.
 
-    missing_skills = market_skills - resume_skills #Finds market skills that were not found on the resume.
+    missing_skills = find_missing_skills(
+        market_skills,
+        resume_skills
+    ) #Uses analysis.py to find market skills that are missing from the resume.
 
-    matched_skills = market_skills & resume_skills #Finds skills that appear in both the market and the resume.
+    matched_skills = find_matched_skills(
+        market_skills,
+        resume_skills
+    ) #Uses analysis.py to find skills shared by the job market and the resume.
 
-    prioritized_missing_skills = [] #Creates an empty list to store missing skills together with their market demand counts.
+    prioritized_missing_skills = prioritize_missing_skills(
+        skill_counts,
+        missing_skills
+    ) #Uses analysis.py to organize missing skills by their job market demand.
 
-    for skill in skill_counts: #Loops through every market skill and its count.
-
-        if skill["skill"] in missing_skills: #Checks if the current market skill is missing from the resume.
-
-            prioritized_missing_skills.append(
-                {
-                    "skill": skill["skill"],
-                    "count": skill["count"]
-                }
-            ) #Stores the missing skill and its market count as a normal dictionary.
-
-    if len(market_skills) > 0: #Checks if there are any market skills before attempting the percentage calculation.
-
-        match_percentage = round(
-            (
-                len(matched_skills)
-                /
-                len(market_skills)
-            )
-            * 100
-        ) #Calculates what percentage of market skills are already found on the resume.
-
-    else:
-
-        match_percentage = 0
+    match_percentage = calculate_match_percentage(
+        market_skills,
+        matched_skills
+    ) #Uses analysis.py to calculate what percentage of market skills are already found on the resume.
 
     session["missing_skills"] = list(
         missing_skills
@@ -221,3 +218,9 @@ def upload_resume(): #Processes the resume uploaded by the user.
     print(match_percentage) #Displays the calculated match percentage in the terminal while we are still testing the application.
 
     return redirect("/") #Sends the user back to the home page after the resume analysis is complete.
+
+
+
+if __name__ == "__main__": #Checks if this file is being run directly.
+
+    app.run(debug=True) #Starts the Flask development server.
