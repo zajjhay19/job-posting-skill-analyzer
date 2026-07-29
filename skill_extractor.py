@@ -32,8 +32,6 @@ def extract_skills(description): #Creates a machine that takes text and returns 
 
     for skill in SKILLS: #Loops through every skill the application knows about.
 
-        print(skill) #Displays the current skill being checked for debugging and learning purposes.
-
         if skill.lower() in description: #Checks if the current skill appears anywhere in the text.
 
             found_skills.append(skill) #Adds the detected skill to the results list.
@@ -50,4 +48,4 @@ if __name__ == "__main__": #Checks if this file is being run directly instead of
 
     skills = extract_skills(description) #Runs the extractor on the sample text.
 
-    print(skills) #Displays the skills that were successfully detected.
+   

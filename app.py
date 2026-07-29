@@ -1,5 +1,5 @@
 import os #Imports tools that let Python read information stored in the computer's environment.
-
+from datetime import date #Imports date tools so the application can use the current date.
 from flask import Flask, render_template, request, redirect, session, flash #Imports the Flask tools used for webpages, forms, redirects, sessions, and temporary feedback messages.
 
 from resume_parser import extract_resume_text #Imports the machine that converts an uploaded resume file into readable text.
@@ -115,7 +115,7 @@ def add(): #Processes a new job posting submitted by the user.
         job_title,
         salary,
         description,
-        "2026-07-01"
+        date.today().isoformat()
     )
 
     skills = extract_skills(description) #Finds all recognized skills inside the job description.
@@ -211,15 +211,7 @@ def upload_resume(): #Processes the resume uploaded by the user.
 
     session["prioritized_missing_skills"] = prioritized_missing_skills #Stores the prioritized missing skills and demand counts in the session.
 
-    print(missing_skills) #Displays the missing skills in the terminal while we are still testing the application.
-
-    print(resume_skills) #Displays the detected resume skills in the terminal while we are still testing the application.
-
-    print(match_percentage) #Displays the calculated match percentage in the terminal while we are still testing the application.
-
     return redirect("/") #Sends the user back to the home page after the resume analysis is complete.
-
-
 
 if __name__ == "__main__": #Checks if this file is being run directly.
 
