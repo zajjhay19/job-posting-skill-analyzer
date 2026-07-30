@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
+    <!-- Helps the page display correctly on phones and smaller screens. -->
+    <meta charset="UTF-8">
+
+    <!-- Makes the page responsive instead of displaying like a desktop page on mobile. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Job Posting Skill Analyzer</title>
-    <script src = "https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+     <!-- Loads Bootstrap's ready-made design classes. -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel ="stylesheet"
+    >
+    <!-- Loads Chart.js so the skills chart can still be created. -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
-<body>
 
+<body>
+    <div class="container mt-4">
     <h1>Job Posting Skill Analyzer</h1>
         {% with messages = get_flashed_messages() %}
 
@@ -126,5 +142,8 @@
             }
         });
     </script>
+
+
+    </div>
 </body>
 </html>
