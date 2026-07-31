@@ -1,26 +1,95 @@
 SKILLS = [ #Creates the master list of skills the application knows how to recognize.
 
+    # Programming languages
     "Python",
     "SQL",
-    "Flask",
     "Java",
     "JavaScript",
     "TypeScript",
     "C#",
     "C++",
     "Go",
-    "Docker",
-    "Git",
+    "PHP",
+    "Ruby",
+    "Kotlin",
+    "Swift",
+    "Scala",
+
+    # Backend frameworks and tools
+    "Flask",
+    "Django",
+    "FastAPI",
+    "Spring Boot",
+    "Node.js",
+    "Express.js",
+    ".NET",
+    "Laravel",
+    "Ruby on Rails",
+
+    # Frontend technologies
     "HTML",
     "CSS",
     "React",
-    "Node.js",
+    "Angular",
+    "Vue.js",
+    "Bootstrap",
+    "Tailwind CSS",
+
+    # Databases
+    "SQLite",
+    "MySQL",
+    "PostgreSQL",
+    "MongoDB",
+    "Microsoft SQL Server",
+    "Oracle",
+    "Redis",
+
+    # Cloud platforms
     "AWS",
     "Azure",
+    "Google Cloud",
+    "Firebase",
+
+    # DevOps and deployment
+    "Docker",
+    "Kubernetes",
+    "Git",
+    "GitHub",
+    "GitLab",
+    "Jenkins",
+    "Terraform",
     "Linux",
+    "Nginx",
+
+    # Data and analytics
     "Excel",
     "Power BI",
-    "TensorFlow"
+    "Tableau",
+    "Pandas",
+    "NumPy",
+    "Matplotlib",
+    "Apache Spark",
+
+    # Artificial intelligence and machine learning
+    "TensorFlow",
+    "PyTorch",
+    "Scikit-learn",
+    "Machine Learning",
+    "Natural Language Processing",
+
+    # Testing and development tools
+    "Selenium",
+    "Pytest",
+    "JUnit",
+    "Postman",
+    "Jira",
+
+    # APIs and software architecture
+    "REST API",
+    "GraphQL",
+    "Microservices",
+    "JSON",
+    "XML"
 ]
 
 
