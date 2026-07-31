@@ -1,0 +1,24 @@
+body{
+    background-color: #f8f9fa;;
+}
+
+.dashboard-card{
+
+    background-color: white;
+
+    padding: 25px;
+
+    border-radius: 10px;
+
+    box-shadow: 0px 2px 8px rgba( 0, 0, 0, 0.10);
+
+    margin-bottom: 25px;
+
+}
+
+/* Controls how wide the main page content can become. */
+.container {
+
+    max-width: 1000px;
+
+}

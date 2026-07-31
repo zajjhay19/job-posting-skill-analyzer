@@ -7,143 +7,284 @@
     <meta charset="UTF-8">
 
     <!-- Makes the page responsive instead of displaying like a desktop page on mobile. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
     <title>Job Posting Skill Analyzer</title>
 
-     <!-- Loads Bootstrap's ready-made design classes. -->
-    <link 
+    <!-- Loads Bootstrap's ready-made design classes. -->
+    <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-        rel ="stylesheet"
+        rel="stylesheet"
     >
-    <!-- Loads Chart.js so the skills chart can still be created. -->
+
+    <!-- Loads the custom CSS file from the static folder. -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+    <!-- Loads Chart.js so the skills chart can be created. -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
-
 <body>
+
     <div class="container mt-4">
-    <h1>Job Posting Skill Analyzer</h1>
+
+        <h1 class="text-center mb-4">
+            Job Posting Skill Analyzer
+        </h1>
+
         {% with messages = get_flashed_messages() %}
 
             {% if messages %}
 
                 {% for message in messages %}
 
-                    <p>{{ message }}</p>
+                    <p>
+                        {{ message }}
+                    </p>
 
                 {% endfor %}
 
             {% endif %}
-        
-        {%endwith %}
 
-        <form action="/add" method="POST">
+        {% endwith %}
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <h2>
+                    Add Job
+                </h2>
+
+                <form
+                    action="/add"
+                    method="POST"
+                    class="dashboard-card"
+                >
+
+                    <label class="form-label">
+                        Company
+                    </label>
+
+                    <input
+                        type="text"
+                        name="company"
+                        class="form-control"
+                        required
+                    >
+
+                    <label class="form-label">
+                        Job Title
+                    </label>
+
+                    <input
+                        type="text"
+                        name="job_title"
+                        class="form-control"
+                        required
+                    >
+
+                    <label class="form-label">
+                        Salary
+                    </label>
+
+                    <input
+                        type="text"
+                        name="salary"
+                        class="form-control"
+                        required
+                    >
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        class="form-control"
+                        rows="5"
+                        required
+                    ></textarea>
+
+                    <br><br>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Add Job
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <h2>
+                    Upload Resume
+                </h2>
+
+                <form
+                    action="/upload_resume"
+                    method="POST"
+                    enctype="multipart/form-data"
+                    class="dashboard-card"
+                >
+
+                    <input
+                        type="file"
+                        name="resume"
+                        class="form-control"
+                        required
+                    >
+
+                    <br><br>
+
+                    <button
+                        type="submit"
+                        class="btn btn-success"
+                    >
+                        Upload Resume
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
 
 
-            <p>Company</p>
-            <input type="text" name="company" required>
+        <div class="dashboard-card">
 
-            <p>Job Title</p>
-            <input type="text" name="job_title" required>
+        <h2>
+            Resume Match
+        </h2>
 
-            <p>Salary</p>
-            <input type="text" name="salary" >
+        <!-- Displays the percentage of job market skills already found on the resume. -->
+        <p>
+            {{ match_percentage }}%
+        </p>
 
-            <p>Description</p>
-            <textarea name="description" required></textarea>
+        </div>
 
-            <br><br>
-
-            <button type="submit">Add Job</button>
-
-        </form>
-    <h2>Upload Resume</h2>
-
-    <form action="/upload_resume"
-            method="POST"
-            enctype="multipart/form-data">
-
-            <input type="file" name="resume"  required>
-
-            <br><br>
-
-            <button type="submit">
-                Upload Resume
-            </button>
-
-    </form>
-    <h2>Resume Match</h2>
-
-    <p>{{ match_percentage }}%</p> <!--Displays the percentage of job market skills that are already on the resume.-->
-    
-    <h2>Matched Skills</h2>
-
-    <ul>
-        {% for skill in matched_skills %}
-
-            <li>
-                {{ skill }}
-            </li>
-
-        {% endfor %}
-    </ul>
-
-    <h2>Missing Skills</h2>
-
-    <ul>
-        {% for skill in prioritized_missing_skills %}
-
-            <li>
-                {{ skill["skill"] }} - {{ skill["count"] }} job postings
-            </li>
-
-        {% endfor %}
-    </ul>
-    
-    <h2>Top Skills</h2>
-
-    <canvas id = "skillsChart"></canvas>
+         <div class="dashboard-card">
+        <h2>
+            Matched Skills
+        </h2>
 
         <ul>
+
+            {% for skill in matched_skills %}
+
+                <li>
+                    {{ skill }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+        </div>
+
+        <div class="dashboard-card">
+
+        <h2>
+            Missing Skills
+        </h2>
+
+        <ul>
+
+            {% for skill in prioritized_missing_skills %}
+
+                <li>
+                    {{ skill["skill"] }} - {{ skill["count"] }} job postings
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+        </div>
+
+
+         <div class="dashboard-card">
+        <h2>
+            Top Skills
+        </h2>
+
+        <canvas id="skillsChart"></canvas>
+
+        <ul>
+
             {% for skill in skill_counts %}
+
                 <li>
                     {{ skill["skill"] }} - {{ skill["count"] }}
                 </li>
+
             {% endfor %}
+
         </ul>
+        </div>
 
-    <p>Saved job postings:</p>
+        <div class="dashboard-card">
+        <p>
+            Saved job postings:
+        </p>
 
-    <ul>
-        {% for job in jobs %}
-            <li>
-                {{ job["company"] }} - {{ job["job_title"] }} - {{ job["salary"] }}
-            </li>
-        {% endfor %}
-    </ul>
+        <ul>
 
+            {% for job in jobs %}
 
-    <script>
-      const skillLabels = {{ skill_labels | tojson }};
+                <li>
+                    {{ job["company"] }} - {{ job["job_title"] }} - {{ job["salary"] }}
+                </li>
 
-      const skillData = {{ skill_data | tojson }};
+            {% endfor %}
 
-        const ctx = document.getElementById("skillsChart");
+        </ul>
+        </div>
+        
+        <script>
 
-        new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: skillLabels,
-                datasets:[{
-                    label: "Skill Count",
-                    data: skillData
-                }] 
-            }
-        });
-    </script>
+            const skillLabels = {{ skill_labels | tojson }};
 
+            const skillData = {{ skill_data | tojson }};
+
+            const ctx = document.getElementById(
+                "skillsChart"
+            );
+
+            new Chart(
+                ctx,
+                {
+                    type: "bar",
+
+                    data: {
+                        labels: skillLabels,
+
+                        datasets: [
+                            {
+                                label: "Skill Count",
+                                data: skillData
+                            }
+                        ]
+                    }
+                }
+            );
+
+        </script>
 
     </div>
+
 </body>
+
 </html>
