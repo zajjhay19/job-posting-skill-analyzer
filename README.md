@@ -146,52 +146,74 @@ Docker
 
 ---
 
+
 ## Running the Project
 
-Clone the repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/zajjhay19/job-posting-skill-analyzer.git
 ```
 
-Move into the project
+### 2. Move into the project folder
 
 ```bash
 cd job-posting-skill-analyzer
 ```
 
-Create a virtual environment
+### 3. Create a virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-Activate it
+### 4. Activate the virtual environment
 
-Windows
+**Windows (PowerShell)**
 
-```bash
+```powershell
+venv\Scripts\Activate.ps1
+```
+
+**Windows (Command Prompt)**
+
+```cmd
 venv\Scripts\activate
 ```
 
-Install Flask
+### 5. Install the required packages
 
 ```bash
-pip install flask
+pip install flask pypdf python-docx
 ```
 
-Run the application
+These packages are used for:
+
+- **Flask** – Runs the web application.
+- **pypdf** – Reads PDF resumes.
+- **python-docx** – Reads Microsoft Word (.docx) resumes.
+
+### 6. Create the database
+
+```bash
+python database.py
+```
+
+This creates the required `jobs` and `skills` tables.
+
+### 7. Run the application
 
 ```bash
 python app.py
 ```
 
-Open
+### 8. Open the application
+
+Open your browser and visit:
 
 ```
 http://127.0.0.1:5000
 ```
-
 ---
 
 ## What I've Learned
