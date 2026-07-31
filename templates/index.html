@@ -99,7 +99,6 @@
                         type="text"
                         name="salary"
                         class="form-control"
-                        required
                     >
 
                     <label class="form-label">
@@ -169,8 +168,12 @@
         </h2>
 
         <!-- Displays the percentage of job market skills already found on the resume. -->
-        <p>
+        <p class="display-5 fw-bold mb-0">
             {{ match_percentage }}%
+        </p>
+
+        <p class="text-muted">
+            {{ match_percentage }}% of the selected resume matches the current job market skills.
         </p>
 
         </div>
