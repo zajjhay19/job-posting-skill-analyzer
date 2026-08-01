@@ -232,19 +232,8 @@
             Top Skills
         </h2>
 
-        <canvas id="skillsChart"></canvas>
+        <canvas id="skillsChart" height="120"></canvas>
 
-        <ul>
-
-            {% for skill in skill_counts %}
-
-                <li>
-                    {{ skill["skill"] }} - {{ skill["count"] }}
-                </li>
-
-            {% endfor %}
-
-        </ul>
         </div>
 
         <div class="dashboard-card">
@@ -344,10 +333,44 @@
                         datasets: [
                             {
                                 label: "Skill Count",
-                                data: skillData
+
+                                data: skillData,
+                                
+                                backgroundColor:"#0d7efd",
+
+                                borderRadius:6,
+
+                                barPercentage:0.8,
+
+                                categoryPercentage:0.8,
+
+                                borderWidth:1
+
+                                
                             }
                         ]
+                    }, 
+                    options: {
+                        responsive: true,
+
+                        maimtainAspectRatio: false,
+
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+
+                     scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks:{
+                                precision: 0
+                            }
+                        }
+                     }   
                     }
+
                 }
             );
 
