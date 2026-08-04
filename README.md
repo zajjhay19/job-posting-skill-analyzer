@@ -1,8 +1,53 @@
 # Job Posting Skill Analyzer
 
-A Flask web application that analyzes job postings, extracts technical skills, compares them with an uploaded résumé, and identifies the most important skill gaps based on job-market demand.
+A Flask web application that analyzes job postings, extracts technical skills from job descriptions, compares them with an uploaded résumé, and identifies the most important skill gaps based on current job-market demand.
 
-This project was built as part of my backend software development portfolio to demonstrate practical experience with Python, Flask, SQLite, SQL, HTML, CSS, Bootstrap, Jinja2, Chart.js, file processing, and Git.
+This project was built as part of my backend software development portfolio to demonstrate practical experience with Python, Flask, SQLite, SQL, HTML, CSS, Bootstrap, Jinja2, Chart.js, file processing, database design, and Git.
+
+---
+
+## Project Status
+
+**Version:** 1.0
+
+**Status:** ✅ Complete
+
+This project is feature-complete as a portfolio application and demonstrates backend software development, relational database design, file processing, server-side rendering, data visualization, and business-logic separation using Python and Flask.
+
+---
+
+## Project Highlights
+
+- Backend web application built with Python and Flask
+- SQLite relational database
+- PDF and DOCX résumé parsing
+- Automatic technical skill extraction
+- Resume-to-job-market skill comparison
+- Skill gap prioritization based on employer demand
+- Live analytics dashboard using Chart.js
+- Responsive Bootstrap interface
+- Light and Dark Mode support
+- Modular project architecture
+
+---
+
+# Screenshots
+
+## Dashboard (Light Mode)
+
+> *(Insert screenshot here)*
+
+---
+
+## Dashboard (Dark Mode)
+
+> *(Insert screenshot here)*
+
+---
+
+## Resume Analysis
+
+> *(Insert screenshot here)*
 
 ---
 
@@ -13,22 +58,23 @@ This project was built as part of my backend software development portfolio to d
 - Automatically extract recognized skills from job descriptions
 - Store extracted skills in a separate database table
 - Count how often each skill appears across saved job postings
-- Display skill-frequency data in a Chart.js bar chart
+- Display live skill-frequency analytics using Chart.js
 - Upload PDF and DOCX résumés
 - Extract text from uploaded résumés
 - Detect recognized skills in résumé text
 - Compare résumé skills with current job-market skills
 - Calculate a résumé-to-market match percentage
 - Display matched résumé skills
-- Display missing résumé skills
-- Prioritize missing skills by how often employers request them
+- Display prioritized missing skills
+- Rank missing skills by employer demand
 - Validate required job-posting fields
 - Reject unsupported résumé file types
-- Display user-facing validation messages
-- Use Flask sessions to preserve analysis results after redirects
-- Automatically save the current date when a job is added
-- Responsive Bootstrap dashboard layout
-- Custom CSS cards, spacing, shadows, and page styling
+- Display user-friendly validation messages
+- Preserve analysis results using Flask sessions
+- Automatically save the current date
+- Responsive Bootstrap dashboard
+- Light and Dark Mode theme toggle
+- Custom dashboard cards and styling
 - Git and GitHub version control
 
 ---
@@ -39,9 +85,12 @@ This project was built as part of my backend software development portfolio to d
 
 - Python 3
 - Flask
-- SQLite3
 
-### Résumé Processing
+### Database
+
+- SQLite
+
+### Resume Processing
 
 - pypdf
 - python-docx
@@ -54,14 +103,24 @@ This project was built as part of my backend software development portfolio to d
 - Jinja2
 - Chart.js
 
-### Database
+### Libraries
 
-- SQLite
+- re (Regular Expressions)
 
-### Version Control
+### Development Tools
 
 - Git
 - GitHub
+
+### Concepts
+
+- CRUD operations
+- Session management
+- Relational databases
+- Business logic separation
+- Data visualization
+- File processing
+- Responsive web design
 
 ---
 
@@ -70,377 +129,205 @@ This project was built as part of my backend software development portfolio to d
 ```text
 job-posting-skill-analyzer/
 │
-├── app.py                 # Flask routes, request handling, sessions, and validation
-├── analysis.py            # Skill comparison and analysis functions
-├── database.py            # Database creation and query functions
-├── resume_parser.py       # PDF and DOCX text extraction
-├── skill_extractor.py     # Skill detection logic
-├── jobs.db                # Local SQLite database ignored by Git
+├── app.py
+├── analysis.py
+├── database.py
+├── resume_parser.py
+├── skill_extractor.py
+├── jobs.db
 │
 ├── templates/
-│   └── index.html         # Main Jinja2 template
+│   └── index.html
 │
 ├── static/
-│   └── style.css          # Custom application styling
+│   └── style.css
 │
-├── .gitignore
-└── README.md
+├── requirements.txt
+├── README.md
+└── .gitignore
 ```
 
 ---
 
 ## Application Architecture
 
-The application separates its responsibilities across multiple files:
-
 ```text
-app.py
-│
-├── Handles Flask routes
-├── Receives form submissions
-├── Validates user input
-├── Manages sessions
-└── Sends data to the HTML template
+                 User
 
-analysis.py
-│
-├── Finds matched skills
-├── Finds missing skills
-├── Calculates the match percentage
-└── Prioritizes missing skills by market demand
+                   │
 
-database.py
-│
-├── Creates database tables
-├── Saves jobs
-├── Saves extracted skills
-├── Retrieves saved jobs
-└── Calculates skill-frequency counts
+                   ▼
 
-resume_parser.py
-│
-└── Converts PDF and DOCX résumés into plain text
+          Flask Application
 
-skill_extractor.py
-│
-└── Detects recognized skills inside job descriptions and résumés
+                   │
+
+      ┌────────────┼────────────┐
+
+      ▼            ▼            ▼
+
+ Database      Analysis     Resume Parser
+
+(SQLite)         Logic
+
+      │            │            │
+
+      └────────► Skill Extractor
+
+                    │
+
+                    ▼
+
+            Jinja2 Templates
+
+                    │
+
+                    ▼
+
+         Bootstrap Dashboard
 ```
 
 ---
 
 ## Database Design
 
-### `jobs` table
+### jobs
 
 | Column | Description |
-|---|---|
-| `id` | Primary key |
-| `company` | Company name |
-| `job_title` | Job title |
-| `salary` | Salary information |
-| `description` | Full job description |
-| `date_added` | Date the job was added |
+|---------|-------------|
+| id | Primary Key |
+| company | Company name |
+| job_title | Job title |
+| salary | Salary |
+| description | Job description |
+| date_added | Date added |
 
-### `skills` table
+### skills
 
 | Column | Description |
-|---|---|
-| `id` | Primary key |
-| `job_id` | ID of the related job posting |
-| `skill` | Extracted skill name |
+|---------|-------------|
+| id | Primary Key |
+| job_id | Related job |
+| skill | Extracted skill |
 
-The `job_id` column connects each extracted skill to the job posting where it was found.
+Each extracted skill is linked back to its originating job posting through the **job_id** foreign key.
 
 ---
 
-## Current Skill List
+## Skill Detection
 
-The application currently recognizes skills across several categories.
+The application currently recognizes technical skills across:
 
-### Programming Languages
+- Programming Languages
+- Backend Development
+- Frontend Development
+- Databases
+- Cloud Platforms
+- DevOps
+- Data Analytics
+- Artificial Intelligence
+- Testing Tools
+- APIs and Software Architecture
 
-- Python
-- SQL
-- Java
-- JavaScript
-- TypeScript
-- C#
-- C++
-- Go
-- PHP
-- Ruby
-- Kotlin
-- Swift
-- Scala
-
-### Backend Frameworks and Tools
-
-- Flask
-- Django
-- FastAPI
-- Spring Boot
-- Node.js
-- Express.js
-- .NET
-- Laravel
-- Ruby on Rails
-
-### Frontend Technologies
-
-- HTML
-- CSS
-- React
-- Angular
-- Vue.js
-- Bootstrap
-- Tailwind CSS
-
-### Databases
-
-- SQLite
-- MySQL
-- PostgreSQL
-- MongoDB
-- Microsoft SQL Server
-- Oracle
-- Redis
-
-### Cloud Platforms
-
-- AWS
-- Azure
-- Google Cloud
-- Firebase
-
-### DevOps and Deployment
-
-- Docker
-- Kubernetes
-- Git
-- GitHub
-- GitLab
-- Jenkins
-- Terraform
-- Linux
-- Nginx
-
-### Data and Analytics
-
-- Excel
-- Power BI
-- Tableau
-- Pandas
-- NumPy
-- Matplotlib
-- Apache Spark
-
-### Artificial Intelligence and Machine Learning
-
-- TensorFlow
-- PyTorch
-- Scikit-learn
-- Machine Learning
-- Natural Language Processing
-
-### Testing and Development Tools
-
-- Selenium
-- Pytest
-- JUnit
-- Postman
-- Jira
-
-### APIs and Architecture
-
-- REST API
-- GraphQL
-- Microservices
-- JSON
-- XML
-
-Skill detection is case-insensitive.
-
-### Example
-
-Input:
-
-```text
-Looking for python, Flask, SQL and Docker experience.
-```
-
-Detected skills:
-
-```text
-Python
-SQL
-Flask
-Docker
-```
+Skill detection is case-insensitive and supports dozens of commonly requested technologies.
 
 ---
 
 ## How the Application Works
 
-### Job-posting analysis
+### Job Analysis
 
-1. The user enters a company, job title, salary, and job description.
-2. Flask validates the required information.
-3. The job is saved in the `jobs` table.
-4. The skill extractor checks the description against the recognized skill list.
-5. Each detected skill is saved in the `skills` table.
-6. SQLite groups matching skills and calculates how often each skill appears.
-7. Chart.js displays the current skill-frequency results.
+1. User submits a job posting.
+2. Flask validates the input.
+3. The job is stored in SQLite.
+4. The skill extractor scans the description.
+5. Skills are saved in the database.
+6. SQL aggregates skill frequencies.
+7. Chart.js visualizes the results.
 
-### Résumé analysis
+### Resume Analysis
 
-1. The user uploads a PDF or DOCX résumé.
-2. Flask validates that a supported file was submitted.
-3. The résumé parser extracts plain text from the file.
-4. The skill extractor identifies recognized résumé skills.
-5. The application compares résumé skills with skills from saved job postings.
-6. The analysis layer calculates:
-   - matched skills
-   - missing skills
-   - match percentage
-   - missing-skill demand counts
-7. Flask stores the results in the session.
-8. The dashboard displays the completed résumé analysis.
+1. User uploads a PDF or DOCX résumé.
+2. Flask validates the file.
+3. Text is extracted.
+4. Skills are detected.
+5. Resume skills are compared with market skills.
+6. The application calculates:
+   - Match percentage
+   - Matched skills
+   - Missing skills
+   - Missing-skill demand
+7. Results are displayed on the dashboard.
 
 ---
 
-## Match Percentage
+## Resume Match Percentage
 
-The match percentage represents how many unique job-market skills were found on the uploaded résumé.
+The application compares unique résumé skills against unique skills found across saved job postings.
 
-```text
-matched market skills
---------------------- × 100
-total market skills
 ```
+Matched Skills
+────────────── × 100
+Market Skills
+```
+
+If there are no market skills available, the application safely returns **0%** instead of dividing by zero.
+
+---
+
+## Missing Skill Prioritization
+
+Missing skills are sorted by employer demand.
 
 Example:
 
-```text
-Matched skills: 6
-Market skills: 8
-
-6 ÷ 8 × 100 = 75%
+```
+Docker      — 5 job postings
+AWS         — 3 job postings
+Azure       — 1 job posting
 ```
 
-If there are no market skills available, the application returns `0%` instead of attempting to divide by zero.
+This helps users identify which missing skills are likely to have the greatest impact on employability.
 
 ---
 
-## Missing-Skill Prioritization
+## Validation & Error Handling
 
-Missing skills are displayed with the number of saved job postings in which they appeared.
+The application handles:
 
-Example:
-
-```text
-Docker - 5 job postings
-AWS - 3 job postings
-Azure - 1 job posting
-```
-
-This helps the user decide which missing skills may be most valuable to learn first.
-
----
-
-## Validation and Error Handling
-
-The application handles several common edge cases:
-
-- Missing company, job title, or job description
-- Missing résumé field
-- No résumé file selected
-- Unsupported résumé file type
-- Job descriptions containing no recognized skills
-- Résumés containing no recognized skills
-- No market skills available for comparison
-- Empty sets during percentage calculations
-
-Only PDF and DOCX résumés are accepted.
+- Missing required fields
+- Blank résumé uploads
+- Unsupported file types
+- Empty databases
+- Job descriptions with no recognized skills
+- Résumés with no recognized skills
+- Division-by-zero scenarios
+- Empty skill sets
+- Missing chart data
 
 ---
 
 ## Running the Project
 
-### 1. Clone the repository
-
 ```bash
 git clone https://github.com/zajjhay19/job-posting-skill-analyzer.git
-```
 
-### 2. Move into the project folder
-
-```bash
 cd job-posting-skill-analyzer
-```
 
-### 3. Create a virtual environment
-
-```bash
 python -m venv venv
-```
 
-### 4. Activate the virtual environment
-
-#### Windows PowerShell
-
-```powershell
 venv\Scripts\Activate.ps1
-```
 
-If PowerShell blocks the activation script, temporarily allow it for the current terminal session:
+pip install -r requirements.txt
 
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-```
-
-Then run:
-
-```powershell
-venv\Scripts\Activate.ps1
-```
-
-#### Windows Command Prompt
-
-```cmd
-venv\Scripts\activate
-```
-
-### 5. Install the required packages
-
-```bash
-pip install flask pypdf python-docx
-```
-
-These packages are used for:
-
-- **Flask** — runs the web application
-- **pypdf** — reads PDF résumés
-- **python-docx** — reads Microsoft Word `.docx` résumés
-
-### 6. Create the database
-
-```bash
 python database.py
-```
 
-This creates the required `jobs` and `skills` tables.
-
-### 7. Run the application
-
-```bash
 python app.py
 ```
 
-### 8. Open the application
+Visit:
 
-Open a browser and visit:
-
-```text
+```
 http://127.0.0.1:5000
 ```
 
@@ -448,81 +335,74 @@ http://127.0.0.1:5000
 
 ## Testing Completed
 
-The following workflows and edge cases have been tested:
+✔ Normal job posting
 
-- Add a normal job posting
-- Add a job containing recognized skills
-- Add a job containing no recognized skills
-- Upload a valid PDF résumé
-- Upload a valid DOCX résumé
-- Upload an unsupported TXT file
-- Submit a résumé form without a file
-- Analyze a résumé containing no recognized skills
-- Calculate a match percentage with no market skills
-- Confirm matched skills appear correctly
-- Confirm missing skills appear correctly
-- Confirm missing-skill demand counts appear correctly
-- Confirm the chart updates after adding new jobs
-- Confirm the application loads when the database is empty
-- Confirm the app works after cloning it onto another computer
+✔ Blank salary
+
+✔ Missing required fields
+
+✔ PDF résumé
+
+✔ DOCX résumé
+
+✔ Unsupported file type
+
+✔ Blank résumé
+
+✔ No recognized skills
+
+✔ Partial résumé match
+
+✔ Full résumé match
+
+✔ Empty database
+
+✔ Empty dashboard states
+
+✔ Dark Mode
+
+✔ Light Mode
 
 ---
 
 ## What I Learned
 
-Through this project, I practiced:
+This project strengthened my understanding of:
 
 - Python programming
-- Flask web development
-- Flask routing
-- Request and form handling
-- Flask sessions
-- User-input validation
-- Flash messages
-- File uploads
-- PDF processing
-- DOCX processing
-- SQLite database design
-- SQL queries
-- Primary and foreign-key relationships
-- CRUD-style database operations
-- Python functions
-- Lists, sets, tuples, and dictionaries
-- Set difference and intersection
-- Defensive programming
-- Division-by-zero protection
+- Flask application structure
+- SQL and SQLite
+- Relational database design
+- CRUD operations
 - Business-logic separation
+- Session management
+- PDF and DOCX parsing
+- File uploads
 - Jinja2 templating
-- HTML forms
-- CSS styling
-- Bootstrap responsive layouts
-- Chart.js data visualization
-- Git commits
-- GitHub pushes and pulls
-- Rebase conflict resolution
-- Virtual environments
-- Debugging Python and Flask errors
+- Bootstrap
+- Responsive design
+- Chart.js
+- Git and GitHub
+- Debugging and testing
+- Building complete backend applications
 
 ---
 
 ## Future Improvements
 
-Possible future improvements include:
-
-- Deploy the application online
-- Add PostgreSQL support
-- Add user accounts and authentication
-- Add job deletion and editing
-- Search and filter saved job postings
-- Export analysis results
-- Add salary analytics
-- Add company analytics
-- Expand the recognized skill library
-- Replace substring matching with NLP-based skill extraction
-- Add weighted résumé matching using skill demand
-- Add automated tests
-- Add a REST API
-- Add Docker deployment support
+- Deploy to Render
+- Docker support
+- PostgreSQL support
+- User authentication
+- Edit/Delete job postings
+- Search and filtering
+- Export reports
+- Salary analytics
+- Company analytics
+- REST API
+- Automated unit tests
+- NLP-based skill extraction
+- Weighted résumé scoring
 
 ---
 
@@ -530,14 +410,14 @@ Possible future improvements include:
 
 **Zajae Hayles**
 
+Aspiring Backend Software Developer
+
 GitHub:
 
-```text
 https://github.com/zajjhay19
-```
 
 ---
 
 ## License
 
-This project was created for educational and portfolio purposes.
+This project was created for educational purposes and as part of my software development portfolio.
