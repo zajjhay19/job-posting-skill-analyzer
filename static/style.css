@@ -19,6 +19,41 @@ body{
 /* Controls how wide the main page content can become. */
 .container {
 
-    max-width: 1000px;
+    max-width: 1500px;
 
+}
+
+
+/*Dark Mode*/
+body.dark-mode {
+    background-color: #121212;
+    color: #f8f9fa;
+}
+
+body.dark-mode .dashboard-card {
+    background-color: #1e1e1e;
+    color: #f8f9fa;
+}
+
+body.dark-mode .form-control {
+    background-color: #2b2b2b;
+    color: #f8f9fa;
+    border-color: #495057;
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #adb5bd;
+}
+
+body.dark-mode .table {
+    --bs-table-bg: #1e1e1e;
+    --bs-table-color: #f8f9fa;
+    --bs-table-striped-bg: #292929;
+    --bs-table-striped-color: #f8f9fa;
+    --bs-table-hover-bg: #333333;
+    --bs-table-hover-color: #ffffff;
+}
+
+body.dark-mode .text-muted {
+    color: #adb5bd !important;
 }

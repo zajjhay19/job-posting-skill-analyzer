@@ -1,8 +1,12 @@
+import re #Imports tools for matching complete words and technical skill names.
+
+
 SKILLS = [ #Creates the master list of skills the application knows how to recognize.
 
     # Programming languages
     "Python",
     "SQL",
+    "R",
     "Java",
     "JavaScript",
     "TypeScript",
@@ -93,28 +97,44 @@ SKILLS = [ #Creates the master list of skills the application knows how to recog
 ]
 
 
-def extract_skills(description): #Creates a machine that takes text and returns any recognized skills.
+def extract_skills(description): #Creates a function that finds recognized skills inside text.
 
-    found_skills = [] #Creates an empty box to store all detected skills.
+    found_skills = [] #Creates an empty list to store detected skills.
 
-    description = description.lower() #Converts the text to lowercase for consistent matching.
+    for skill in SKILLS: #Loops through every recognized skill.
 
-    for skill in SKILLS: #Loops through every skill the application knows about.
+        escaped_skill = re.escape(
+            skill
+        ) #Protects special characters such as +, #, and periods.
 
-        if skill.lower() in description: #Checks if the current skill appears anywhere in the text.
+        pattern = rf"(?<!\w){escaped_skill}(?!\w)" #Requires the complete skill name instead of part of another word.
 
-            found_skills.append(skill) #Adds the detected skill to the results list.
+        if re.search(
+            pattern,
+            description,
+            re.IGNORECASE
+        ): #Checks for the skill without caring about uppercase or lowercase letters.
 
-    return found_skills #Returns the completed list of detected skills.
+            found_skills.append(
+                skill
+            ) #Adds the complete recognized skill to the results.
 
+    return found_skills #Returns all detected skills.
 
 
 # Testing
 
-if __name__ == "__main__": #Checks if this file is being run directly instead of being imported.
+if __name__ == "__main__": #Checks if this file is being run directly for testing.
 
-    description = "Looking for python, Flask, SQL and Docker." #Creates sample text to test the extractor.
+    description = """
+    Looking for Python, Flask, SQL, Docker, PowerPoint,
+    JavaScript, GitHub, Google Cloud and R.
+    """
 
-    skills = extract_skills(description) #Runs the extractor on the sample text.
+    skills = extract_skills(
+        description
+    ) #Runs the extractor on the sample text.
 
-   
+    print(
+        skills
+    ) #Displays the detected skills.

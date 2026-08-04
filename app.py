@@ -230,13 +230,6 @@ def upload_resume(): #Processes the resume uploaded by the user.
 
     session["prioritized_missing_skills"] = prioritized_missing_skills #Stores the prioritized missing skills and demand counts in the session.
 
-   ## print("Resume skills:", resume_skills)
-    ##print("Market skills:", market_skills)
-    ##print("Matched skills:", matched_skills)
-    ##print("Missing skills:", missing_skills)
-    ##print("Match percentage:", match_percentage)
-
-
     return redirect("/") #Sends the user back to the home page after the resume analysis is complete.
 
 if __name__ == "__main__": #Checks if this file is being run directly.
