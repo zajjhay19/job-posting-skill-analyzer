@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, redirect, session, flash #Imp
 from resume_parser import extract_resume_text #Imports the machine that converts an uploaded resume file into readable text.
 
 from database import (
+    create_database, #Imports the machine that creates the database tables if they do not already exist.
     get_jobs, #Imports the machine that retrieves saved jobs from the database.
     add_job, #Imports the machine that saves a new job into the database.
     add_skill, #Imports the machine that saves an extracted skill into the skills table.
@@ -22,6 +23,7 @@ from analysis import (
 
 
 app = Flask(__name__) #Creates the Flask application that runs the website.
+create_database() #Creates the database tables automatically if they do not already exist.
 
 app.secret_key = os.environ.get(
     "SECRET_KEY",
