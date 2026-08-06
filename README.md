@@ -6,8 +6,48 @@ This project was built as part of my backend software development portfolio to d
 
 ---
 
-## Project Status
+# Job Posting Skill Analyzer
 
+## 🌐 Live Demo
+
+**Live Application**
+https://job-posting-skill-analyzer.onrender.com
+
+
+## Tech Stack
+
+- Python
+- Flask
+- SQLite
+- SQL
+- Bootstrap 5
+- HTML5
+- CSS3
+- Jinja2
+- Chart.js
+- pypdf
+- python-docx
+- Git
+- GitHub
+
+- ## Repository
+
+https://github.com/zajjhay19/job-posting-skill-analyzer
+
+## Portfolio Goals
+
+This project was designed to demonstrate practical backend software development skills including:
+
+- Flask application development
+- SQL database design
+- Server-side rendering
+- Business logic separation
+- File processing
+- Data visualization
+- Git workflow
+- Production deployment
+
+  
 **Version:** 1.0
 
 **Status:** ✅ Complete
@@ -28,6 +68,7 @@ This project is feature-complete as a portfolio application and demonstrates bac
 - Responsive Bootstrap interface
 - Light and Dark Mode support
 - Modular project architecture
+- - Live production deployment on Render
 
 ---
 
@@ -68,7 +109,7 @@ This project is feature-complete as a portfolio application and demonstrates bac
 ![Analysis 3](screenshots/resume-analysis/DarkmodeResumeAnalysis3.png)
 
 
-## Features
+## Core Features
 
 - Add and save job postings
 - Store job data in a SQLite database
@@ -347,7 +388,13 @@ Visit:
 ```
 http://127.0.0.1:5000
 ```
+## Deployment
 
+The application is deployed on Render.
+
+Live URL:
+
+https://job-posting-skill-analyzer.onrender.com
 ---
 
 ## Testing Completed
@@ -407,7 +454,7 @@ This project strengthened my understanding of:
 
 ## Future Improvements
 
-- Deploy to Render
+- Docker containerization
 - Docker support
 - PostgreSQL support
 - User authentication
