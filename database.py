@@ -157,6 +157,6 @@ if __name__ == "__main__": #Checks if this file is being run directly for testin
 
     skill_counts = get_skill_counts() #Retrieves the current skill statistics.
 
-    for skill in skill_counts: #Loops through every skill summary returned by the database.
+   ## for skill in skill_counts: #Loops through every skill summary returned by the database.
 
-        print(skill["skill"], skill["count"]) #Displays the skill name and its frequency.
+     ##   print(skill["skill"], skill["count"]) #Displays the skill name and its frequency.
