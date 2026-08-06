@@ -37,15 +37,15 @@ This project is feature-complete as a portfolio application and demonstrates bac
 
 ### Light Mode
 
-![Dashboard 1](screenshots/dashboard/light-1.png)
+![Dashboard 1](screenshots/dashboard/LightmodeDashboard1.png)
 
-![Dashboard 2](screenshots/dashboard/light-2.png)
+![Dashboard 2](screenshots/dashboard/LightmodeDashboard2.png)
 
 ### Dark Mode
 
-![Dashboard 1](screenshots/dashboard/dark-1.png)
+![Dashboard 1](screenshots/dashboard/DarkmodeDashboard1.png)
 
-![Dashboard 2](screenshots/dashboard/dark-2.png)
+![Dashboard 2](screenshots/dashboard/DarkmodeDashboard2.png)
 
 ---
 
@@ -53,20 +53,19 @@ This project is feature-complete as a portfolio application and demonstrates bac
 
 ### Light Mode
 
-![Analysis 1](screenshots/resume-analysis/light-1.png)
+![Analysis 1](screenshots/resume-analysis/LightmodeResumeAnalysis1.png)
 
-![Analysis 2](screenshots/resume-analysis/light-2.png)
+![Analysis 2](screenshots/resume-analysis/LightmodeResumeAnalysis2.png)
 
-![Analysis 3](screenshots/resume-analysis/light-3.png)
+![Analysis 3](screenshots/resume-analysis/LightmodeResumeAnalysis3.png)
 
 ### Dark Mode
 
-![Analysis 1](screenshots/resume-analysis/dark-1.png)
+![Analysis 1](screenshots/resume-analysis/DarkmodeResumeAnalysis1.png)
 
-![Analysis 2](screenshots/resume-analysis/dark-2.png)
+![Analysis 2](screenshots/resume-analysis/DarkmodeResumeAnalysis2.png)
 
-![Analysis 3](screenshots/resume-analysis/dark-3.png)
-
+![Analysis 3](screenshots/resume-analysis/DarkmodeResumeAnalysis3.png)
 
 
 ## Features
